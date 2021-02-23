@@ -1,0 +1,1 @@
+import{i as a,ai as e,aj as u,c as l,ak as s}from"./index.8a947221.js";import{i}from"./isEqual.222c6e0f.js";function t(t,n="value",o="change"){const v=s(),r=null==v?void 0:v.emit,c=a({value:t[n]}),m=e(c);u((()=>{c.value=t[n]}));return[l({get:()=>c.value,set(a){i(a,m.value)||(c.value=a,null==r||r(o,a))}}),a=>{c.value=a},m]}export{t as u};

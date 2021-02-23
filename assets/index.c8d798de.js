@@ -1,0 +1,1 @@
+import{ad as a,ae as s}from"./index.8a947221.js";const o=a((()=>s((()=>import("./index.99060502.js")),["/vue-vben-admin/assets/index.99060502.js","/vue-vben-admin/assets/index.8a947221.js","/vue-vben-admin/assets/index.04731d6f.css","/vue-vben-admin/assets/vendor.3b1829c7.js","/vue-vben-admin/assets/vendor.4a5fa02d.css"])));export{o as C};
