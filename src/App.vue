@@ -1,5 +1,5 @@
 <template>
-  <ConfigProvider v-bind="lockEvent" :locale="antConfigLocale">
+  <ConfigProvider v-bind="lockEvent" :locale="getAntdLocale">
     <AppProvider>
       <RouterView />
     </AppProvider>
@@ -14,27 +14,25 @@
   import { initAppConfigStore } from '/@/logics/initAppConfig';
 
   import { useLockPage } from '/@/hooks/web/useLockPage';
+  import { useTitle } from '/@/hooks/web/useTitle';
   import { useLocale } from '/@/locales/useLocale';
 
   export default defineComponent({
     name: 'App',
     components: { ConfigProvider, AppProvider },
     setup() {
-      // support Multi-language
-      const { antConfigLocale, setLocale } = useLocale();
-
-      setLocale();
-
       // Initialize vuex internal system configuration
       initAppConfigStore();
+
+      useTitle();
+
+      // support Multi-language
+      const { getAntdLocale } = useLocale();
 
       // Create a lock screen monitor
       const lockEvent = useLockPage();
 
-      return {
-        antConfigLocale,
-        lockEvent,
-      };
+      return { getAntdLocale, lockEvent };
     },
   });
 </script>

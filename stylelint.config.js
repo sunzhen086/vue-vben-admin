@@ -16,6 +16,7 @@ module.exports = {
       },
     ],
     'no-empty-source': null,
+    'named-grid-areas-no-invalid': null,
     'unicode-bom': 'never',
     'no-descending-specificity': null,
     'font-family-no-missing-generic-family-keyword': null,
@@ -27,6 +28,25 @@ module.exports = {
       {
         ignore: ['after-comment', 'first-nested'],
       },
+    ],
+    'unit-no-unknown': [true, { ignoreUnits: ['rpx'] }],
+    'order/order': [
+      [
+        'dollar-variables',
+        'custom-properties',
+        'at-rules',
+        'declarations',
+        {
+          type: 'at-rule',
+          name: 'supports',
+        },
+        {
+          type: 'at-rule',
+          name: 'media',
+        },
+        'rules',
+      ],
+      { severity: 'warning' },
     ],
     // Specify the alphabetical order of the attributes in the declaration block
     'order/properties-order': [
@@ -178,4 +198,5 @@ module.exports = {
       'speak',
     ],
   },
+  ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
 };

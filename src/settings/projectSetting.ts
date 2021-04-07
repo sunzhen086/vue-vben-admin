@@ -1,5 +1,4 @@
-import type { ProjectConfig } from '/@/types/config';
-
+import type { ProjectConfig } from '/#/config';
 import { MenuTypeEnum, MenuModeEnum, TriggerEnum, MixSidebarTriggerEnum } from '/@/enums/menuEnum';
 import { CacheTypeEnum } from '/@/enums/cacheEnum';
 import {
@@ -9,6 +8,7 @@ import {
   RouterTransitionEnum,
   SettingButtonPositionEnum,
 } from '/@/enums/appEnum';
+import { SIDE_BAR_BG_COLOR_LIST, HEADER_PRESET_BG_COLOR_LIST } from './designSetting';
 import { primaryColor, themeMode } from '../../build/config/themeConfig';
 
 // ! You need to clear the browser cache after the change
@@ -26,8 +26,8 @@ const setting: ProjectConfig = {
   permissionCacheType: CacheTypeEnum.LOCAL,
 
   // color
-  // TODO Theme color
   themeColor: primaryColor,
+
   // TODO dark theme
   themeMode: themeMode,
 
@@ -49,21 +49,10 @@ const setting: ProjectConfig = {
   // Whether to show footer
   showFooter: false,
 
-  // locale setting
-  locale: {
-    show: true,
-    // Locale
-    lang: 'zh_CN',
-    // Default locale
-    fallback: 'zh_CN',
-    // available Locales
-    availableLocales: ['zh_CN', 'en'],
-  },
-
   // Header configuration
   headerSetting: {
     // header bg color
-    bgColor: '#ffffff',
+    bgColor: HEADER_PRESET_BG_COLOR_LIST[0],
     // Fixed at the top
     fixed: true,
     // Whether to show top
@@ -86,7 +75,7 @@ const setting: ProjectConfig = {
   // Menu configuration
   menuSetting: {
     // sidebar menu bg color
-    bgColor: '#001529',
+    bgColor: SIDE_BAR_BG_COLOR_LIST[0],
     //  Whether to fix the left menu
     fixed: true,
     // Menu collapse

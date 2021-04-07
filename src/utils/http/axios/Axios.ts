@@ -1,14 +1,15 @@
 import type { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios';
+import type { RequestOptions, Result, UploadFileParams } from './types';
+import type { CreateAxiosOptions } from './axiosTransform';
 
 import axios from 'axios';
+import qs from 'qs';
 import { AxiosCanceler } from './axiosCancel';
 import { isFunction } from '/@/utils/is';
 import { cloneDeep } from 'lodash-es';
 
-import type { RequestOptions, CreateAxiosOptions, Result, UploadFileParams } from './types';
 import { errorResult } from './const';
 import { ContentTypeEnum } from '/@/enums/httpEnum';
-import qs from 'qs';
 import { RequestEnum } from '../../../enums/httpEnum';
 
 export * from './axiosTransform';
@@ -83,9 +84,15 @@ export class VAxios {
     this.axiosInstance.interceptors.request.use((config: AxiosRequestConfig) => {
       // If cancel repeat request is turned on, then cancel repeat request is prohibited
       const {
-        headers: { ignoreCancelToken = false },
+        headers: { ignoreCancelToken },
       } = config;
-      !ignoreCancelToken && axiosCanceler.addPending(config);
+
+      const ignoreCancel =
+        ignoreCancelToken !== undefined
+          ? ignoreCancelToken
+          : this.options.requestOptions?.ignoreCancelToken;
+
+      !ignoreCancel && axiosCanceler.addPending(config);
       if (requestInterceptors && isFunction(requestInterceptors)) {
         config = requestInterceptors(config);
       }
@@ -165,6 +172,22 @@ export class VAxios {
     };
   }
 
+  get<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
+    return this.request({ ...config, method: 'GET' }, options);
+  }
+
+  post<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
+    return this.request({ ...config, method: 'POST' }, options);
+  }
+
+  put<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
+    return this.request({ ...config, method: 'PUT' }, options);
+  }
+
+  delete<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
+    return this.request({ ...config, method: 'DELETE' }, options);
+  }
+
   request<T = any>(config: AxiosRequestConfig, options?: RequestOptions): Promise<T> {
     let conf: AxiosRequestConfig = cloneDeep(config);
     const transform = this.getTransform();
@@ -173,26 +196,27 @@ export class VAxios {
 
     const opt: RequestOptions = Object.assign({}, requestOptions, options);
 
-    const { beforeRequestHook, requestCatch, transformRequestData } = transform || {};
+    const { beforeRequestHook, requestCatchHook, transformRequestHook } = transform || {};
     if (beforeRequestHook && isFunction(beforeRequestHook)) {
       conf = beforeRequestHook(conf, opt);
     }
 
     conf = this.supportFormData(conf);
+
     return new Promise((resolve, reject) => {
       this.axiosInstance
         .request<any, AxiosResponse<Result>>(conf)
         .then((res: AxiosResponse<Result>) => {
-          if (transformRequestData && isFunction(transformRequestData)) {
-            const ret = transformRequestData(res, opt);
+          if (transformRequestHook && isFunction(transformRequestHook)) {
+            const ret = transformRequestHook(res, opt);
             ret !== errorResult ? resolve(ret) : reject(new Error('request error!'));
             return;
           }
           resolve((res as unknown) as Promise<T>);
         })
         .catch((e: Error) => {
-          if (requestCatch && isFunction(requestCatch)) {
-            reject(requestCatch(e));
+          if (requestCatchHook && isFunction(requestCatchHook)) {
+            reject(requestCatchHook(e));
             return;
           }
           reject(e);

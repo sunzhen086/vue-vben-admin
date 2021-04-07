@@ -2,13 +2,18 @@ import lineClamp from 'windicss/plugin/line-clamp';
 import colors from 'windicss/colors';
 
 import { defineConfig } from 'vite-plugin-windicss';
+import { primaryColor } from './build/config/themeConfig';
 
 export default defineConfig({
   darkMode: 'class',
   plugins: [lineClamp, createEnterPlugin()],
   theme: {
     extend: {
-      colors,
+      colors: {
+        ...colors,
+        primary: primaryColor,
+        secondary: 'rgba(0, 0, 0, 0.45)',
+      },
       screens: {
         sm: '576px',
         md: '768px',
